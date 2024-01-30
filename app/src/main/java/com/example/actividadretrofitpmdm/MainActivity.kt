@@ -3,44 +3,11 @@ package com.example.actividadretrofitpmdm
 import androidx.activity.ComponentActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.example.actividadretrofitpmdm.ui.theme.ActividadRetrofitPMDMTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,91 +25,39 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MyScreen() {
-    var isLoading by remember { mutableStateOf(false) }
-    var isError by remember { mutableStateOf(false) }
-    var posts by remember { mutableStateOf<List<Post>>(emptyList()) }
-    val coroutineScope = rememberCoroutineScope()
+/*
+Explicación del código:
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Button(
-            onClick = {
-                // Mock API call
-                isLoading = true
-                coroutineScope.launch {
-                    fetchData {
-                        posts = it
-                        isLoading = false
-                        isError = false
-                    }
-                }
-            },
-            enabled = !isLoading
-        ) {
-            if (isLoading) {
-                CircularProgressIndicator()
-            } else {
-                Icon(imageVector = Icons.Default.Refresh, contentDescription = null)
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("Refrescar")
-            }
-        }
+El código proporcionado constituye una aplicación básica en Android con Jetpack Compose y Retrofit
+para usar una API REST.
 
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else {
-            if (isError) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(imageVector = Icons.Default.Warning, contentDescription = null)
-                    Text("Error al cargar los datos")
-                }
-            } else {
-                LazyColumn {
-                    items(posts) { post ->
-                        // Muestra cada elemento de la lista de publicaciones
-                        Text(text = post.title)
-                        Divider()
-                    }
-                }
-            }
-        }
-    }
-}
+MainActivity y MyScreen:
 
-suspend fun fetchData(onSuccess: (List<Post>) -> Unit) {
-    withContext(Dispatchers.IO) {
-        val api = RetrofitInstance.api
+- MainActivity es la actividad principal de la aplicación Android.
+MyScreen es un composable de Jetpack Compose que define la interfaz de usuario de la pantalla principal de la aplicación.
 
-        // Realizar la llamada a la API utilizando Retrofit
-        val call = api.getPosts()
-        call.enqueue(object : Callback<List<Post>> {
-            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                if (response.isSuccessful) {
-                    val posts = response.body()
-                    if (posts != null) {
-                        // Llamamos a la función de éxito con los datos reales de la API
-                        onSuccess(posts)
-                    }
-                } else {
-                    // Manejar el error según tus necesidades
-                    println("Error: ${response.code()}")
-                }
-            }
+Funcionamiento de MyScreen:
 
-            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-                // Manejar el error según tus necesidades
-                println("Error: ${t.message}")
-            }
-        })
-    }
-}
+- Al iniciar la aplicación, se muestra un botón llamado "Refrescar" en el centro de la pantalla.
+- Al hacer clic en el botón "Refrescar", se simula una llamada a una API (mediante la función fetchData).
+- Durante la simulación de la llamada a la API, se muestra un indicador de carga (CircularProgressIndicator).
+Una vez completada la simulación, se actualiza la lista de publicaciones (posts) y se muestra en una lista vertical (LazyColumn).
+
+Funcionamiento de fetchData:
+
+- La función fetchData utiliza Retrofit para realizar una llamada a la API REST del servicio JSONPlaceholder (https://jsonplaceholder.typicode.com/posts).
+- La llamada se realiza de manera asíncrona en un hilo de fondo (Dispatchers.IO).
+- Cuando la llamada es exitosa, se ejecuta la función onSuccess proporcionada como parámetro, que actualiza la lista de publicaciones (posts).
+- En caso de error, se maneja imprimiendo un mensaje de error en la consola.
+
+RetrofitInstance:
+
+- RetrofitInstance es un objeto que proporciona una instancia de la interfaz Retrofit (JsonPlaceholderApi).
+- La URL base para las llamadas a la API JSONPlaceholder se establece como "https://jsonplaceholder.typicode.com/".
+
+JsonPlaceholderApi y Post:
+
+- JsonPlaceholderApi es una interfaz que define el contrato para las llamadas a la API REST JSONPlaceholder.
+- Post es una clase de datos que representa la estructura de un objeto de publicación obtenido de la API.
+
+*/
