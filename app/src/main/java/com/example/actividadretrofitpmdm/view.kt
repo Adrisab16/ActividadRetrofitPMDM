@@ -29,16 +29,12 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @Composable
 fun MyScreen() {
     var isLoading by remember { mutableStateOf(false) }
     var isError by remember { mutableStateOf(false) }
     var posts by remember { mutableStateOf<List<Post>>(emptyList()) }
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -47,15 +43,23 @@ fun MyScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        val coroutineScope = rememberCoroutineScope()
+
         Button(
             onClick = {
-                // Mock API call
-                isLoading = true
                 coroutineScope.launch {
-                    fetchData {
-                        posts = it
+                    try {
+                        isLoading = true
+                        fetchData {
+                            posts = it
+                            isLoading = false
+                            isError = false
+                        }
+                    } catch (e: Exception) {
+                        // Manejar excepciones
+                        isError = true
                         isLoading = false
-                        isError = false
+                        println("Error en la llamada a la API: ${e.message}")
                     }
                 }
             },
@@ -100,24 +104,18 @@ suspend fun fetchData(onSuccess: (List<Post>) -> Unit) {
 
         // Realizar la llamada a la API utilizando Retrofit
         val call = api.getPosts()
-        call.enqueue(object : Callback<List<Post>> {
-            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                if (response.isSuccessful) {
-                    val posts = response.body()
-                    if (posts != null) {
-                        // Llamamos a la función de éxito con los datos reales de la API
-                        onSuccess(posts)
-                    }
-                } else {
-                    // Manejar el error según tus necesidades
-                    println("Error: ${response.code()}")
-                }
-            }
+        val response = call.execute()
 
-            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-                // Manejar el error según tus necesidades
-                println("Error: ${t.message}")
+        if (response.isSuccessful) {
+            val posts = response.body()
+            if (posts != null) {
+                // Llamamos a la función de éxito con los datos reales de la API
+                onSuccess(posts)
             }
-        })
+        } else {
+            // Manejar el error según tus necesidades
+            println("Error en la respuesta de la API: ${response.code()}")
+            throw Exception("Error en la respuesta de la API: ${response.code()}")
+        }
     }
 }
