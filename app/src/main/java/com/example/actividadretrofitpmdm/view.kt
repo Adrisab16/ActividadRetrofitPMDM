@@ -30,6 +30,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * MyScreen es un composable de Jetpack Compose que define la interfaz de usuario de la pantalla principal de la aplicación.
+ *
+ * Funcionamiento del MyScreen:
+ *
+ * - Al iniciar la aplicación, se muestra un botón llamado "Refrescar" en el centro de la pantalla.
+ *
+ * - Al hacer clic en el botón "Refrescar", se simula una llamada a una API (mediante la función fetchData).
+ *
+ * - Durante la simulación de la llamada a la API, se muestra un indicador de carga (CircularProgressIndicator).
+ *
+ * - Una vez completada la simulación, se actualiza la lista de publicaciones (posts) y se muestra en una lista vertical (LazyColumn).
+ */
+
 @Composable
 fun MyScreen() {
     var isLoading by remember { mutableStateOf(false) }
@@ -98,6 +112,20 @@ fun MyScreen() {
     }
 }
 
+/**
+ * La función fetchData tiene como objetivo realizar una llamada a una API utilizando
+ * Retrofit para obtener datos asíncronamente. Estos datos se obtienen mediante una solicitud
+ * HTTP GET al punto final de la API especificado en la interfaz JsonPlaceholderApi.
+ *
+ * Funcionamiento de FetchData:
+ *
+ * - La función fetchData utiliza Retrofit para realizar una llamada a la API REST del servicio JSONPlaceholder (https://jsonplaceholder.typicode.com/posts).
+ * - La llamada se realiza de manera asíncrona en un hilo de fondo (Dispatchers.IO).
+ * - Cuando la llamada es exitosa, se ejecuta la función onSuccess proporcionada como parámetro, que actualiza la lista de publicaciones (posts).
+ * - En caso de error, se maneja imprimiendo un mensaje de error en la consola.
+ *
+ */
+
 suspend fun fetchData(onSuccess: (List<Post>) -> Unit) {
     withContext(Dispatchers.IO) {
         val api = RetrofitInstance.api
@@ -119,3 +147,5 @@ suspend fun fetchData(onSuccess: (List<Post>) -> Unit) {
         }
     }
 }
+
+
