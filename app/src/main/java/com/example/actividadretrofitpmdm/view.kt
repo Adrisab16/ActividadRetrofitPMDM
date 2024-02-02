@@ -84,7 +84,7 @@ fun MyScreen() {
             } else {
                 Icon(imageVector = Icons.Default.Refresh, contentDescription = null)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Refrescar")
+                Text("Llamada a la API")
             }
         }
 
