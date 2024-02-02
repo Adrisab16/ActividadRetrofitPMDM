@@ -70,7 +70,7 @@ fun MyScreen() {
                             isError = false
                         }
                     } catch (e: Exception) {
-                        // Manejar excepciones
+                        // Manejamos posibles excepciones
                         isError = true
                         isLoading = false
                         println("Error en la llamada a la API: ${e.message}")
@@ -130,7 +130,7 @@ suspend fun fetchData(onSuccess: (List<Post>) -> Unit) {
     withContext(Dispatchers.IO) {
         val api = RetrofitInstance.api
 
-        // Realizar la llamada a la API utilizando Retrofit
+        // Realizamos la llamada a la API utilizando Retrofit
         val call = api.getPosts()
         val response = call.execute()
 
@@ -141,7 +141,7 @@ suspend fun fetchData(onSuccess: (List<Post>) -> Unit) {
                 onSuccess(posts)
             }
         } else {
-            // Manejar el error según tus necesidades
+            // Manejamos los posibles errores
             println("Error en la respuesta de la API: ${response.code()}")
             throw Exception("Error en la respuesta de la API: ${response.code()}")
         }
